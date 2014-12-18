@@ -1,0 +1,20 @@
+- name: install repo keys
+  apt_key: url={{ item }}
+  with_items:
+    - 'http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x36A1D7869245C8950F966E92D8576A8BA88D21E9'
+- name: install repos
+  apt_repository: repo='{{ item }}' update_cache=yes
+  with_items:
+    - 'deb https://get.docker.io/ubuntu docker main'
+- name: install docker package
+  apt: name={{ item }} state=latest
+  with_items:
+    - lxc-docker
+    - python-pip
+- name: install docker-py
+  pip: name=docker-py
+- name: install docker-runlist
+  copy: src=docker_runlist.py dest=/usr/local/bin/docker-runlist mode=755
+- name: install init script for docker-runall
+  copy: src=docker-runall.conf dest=/etc/init/docker-runall.conf mode=644
+  notify: start docker containers

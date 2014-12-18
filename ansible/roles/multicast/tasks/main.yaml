@@ -1,0 +1,9 @@
+- name: install avahi packages
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - iperf
+    - avahi-utils
+- name: setup multicast
+  copy: src=multicast dest=/etc/network/if-up.d/multicast mode=755
+  notify:
+    - restart eth1

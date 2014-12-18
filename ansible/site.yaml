@@ -1,0 +1,38 @@
+---
+- hosts: all
+  roles:
+    - common
+
+- hosts: multicast
+  roles:
+    - multicast
+
+- hosts: docker
+  roles:
+    - docker
+
+- hosts: mq
+  tasks:
+  - name: run rabbitmq container
+    docker: >
+      image=tutum/rabbitmq
+      name=rabbitmq
+      ports=5672:5672,15672:15672
+      env='RABBITMQ_PASS=admin'
+
+- hosts: mongo
+  tasks:
+  - name: run mongo container
+    docker: >
+      image=dockerfile/mongodb
+      name=mongodb
+      ports=27017:27017,28017:28017
+      command='mongod --rest --httpinterface'
+
+- hosts: sql
+  tasks:
+  - name: run sql container
+    docker: >
+      image=mysql
+      ports=3306:3306
+      env='MYSQL_ROOT_PASSWORD=root'

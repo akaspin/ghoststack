@@ -1,0 +1,2 @@
+- name: restart eth1
+  shell: ifdown eth1; ifup eth1

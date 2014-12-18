@@ -1,0 +1,36 @@
+defaults:
+  gui: false
+  box:
+    kvm: base
+    vmware_fusion: phusion/ubuntu-12.04-amd64
+    virtualbox: chef/ubuntu-12.04
+  cpus: 1
+  memory: 1024
+  net:
+    type: private_network
+    ip: null
+    auto: true
+    tld: .local
+    multicast: 224.168.2.9
+  ansible_groups: []
+  ports: {}
+  # Guest/volume: Host/volume
+  volumes: {}
+
+nodes:
+  boss:
+    ports:
+      3306: 3306
+      27017: 27017
+      28017: 28017
+      5672: 5672
+      15672: 15672
+      # 8000: 8000
+    ansible_groups:
+      - docker
+      - mongo
+      - mq
+      - sql
+    volumes:
+      '/pacnet/': '../../pacnet'
+

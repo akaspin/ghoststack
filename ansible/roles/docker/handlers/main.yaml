@@ -1,0 +1,2 @@
+- name: start docker containers
+  service: name=docker-runall enabled=yes state=started
