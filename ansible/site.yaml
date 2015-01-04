@@ -11,7 +11,16 @@
   roles:
     - docker
 
-- hosts: mq
+- hosts: postgres
+  tasks:
+  - name: run postgres container
+    docker: >
+      image=postgres
+      name=postgres
+      ports=5432:5432
+      env='POSTGRES_PASSWORD=postgres'
+
+- hosts: amqp
   tasks:
   - name: run rabbitmq container
     docker: >
@@ -19,6 +28,14 @@
       name=rabbitmq
       ports=5672:5672,15672:15672
       env='RABBITMQ_PASS=admin'
+
+- hosts: redis
+  tasks:
+  - name: run redis container
+    docker: >
+      image=redis
+      name=redis
+      ports=6379:6379
 
 - hosts: mongo
   tasks:
@@ -29,7 +46,7 @@
       ports=27017:27017,28017:28017
       command='mongod --rest --httpinterface'
 
-- hosts: sql
+- hosts: mysql
   tasks:
   - name: run sql container
     docker: >

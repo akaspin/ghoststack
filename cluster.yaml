@@ -1,36 +1,54 @@
+# Override in `nodes`
 defaults:
+  # GUI
   gui: false
+  # Vagrant box for concrete provider
   box:
     kvm: base
-    vmware_fusion: phusion/ubuntu-12.04-amd64
-    virtualbox: chef/ubuntu-12.04
+    vmware_fusion: phusion/ubuntu-14.04-amd64
+    virtualbox: phusion/ubuntu-14.04-amd64
+  # CPUs
   cpus: 1
+  # Memory
   memory: 1024
+  # Network. Activated only with setted IP.
   net:
+    # Network type
     type: private_network
+    # Guest IP
     ip: null
+    # Autoconfigure
     auto: true
+    # Local domain. <name>.local. Use with leading dot.
     tld: .local
+    # Multicast group
     multicast: 224.168.2.9
+  # Ansible host groups. See `ansible/site.yaml`
   ansible_groups: []
+  # Mapped ports.
   ports: {}
-  # Guest/volume: Host/volume
+  # Mapped folders `Guest/volume: Host/volume`
   volumes: {}
 
 nodes:
   boss:
     ports:
+      # MySQL
       3306: 3306
-      27017: 27017
-      28017: 28017
+      # RabbitMQ
       5672: 5672
       15672: 15672
+      # Postgres
+      5432: 5432
+      # Redis
+      6379: 6379
       # 8000: 8000
     ansible_groups:
       - docker
-      - mongo
-      - mq
-      - sql
-    volumes:
-      '/pacnet/': '../../pacnet'
+      - amqp
+      - postgres
+      - redis
+#      - mysql
+#    volumes:
+#      '/pacnet/': '../../pacnet'
 
