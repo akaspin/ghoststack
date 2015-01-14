@@ -25,13 +25,15 @@ defaults:
     multicast: 224.168.2.9
   # Ansible host groups. See `ansible/site.yaml`
   ansible_groups: []
-  # Mapped ports.
+  # Mapped ports: `guest: host`
   ports: {}
-  # Mapped folders `Guest/volume: Host/volume`
+  # Mapped folders `'Guest/volume/': 'Host/volume'`
   volumes: {}
 
 nodes:
   boss:
+    net:
+      ip: 192.168.50.100
     ports:
       # MySQL
       3306: 3306
@@ -42,13 +44,19 @@ nodes:
       5432: 5432
       # Redis
       6379: 6379
-      # 8000: 8000
     ansible_groups:
       - docker
       - amqp
       - postgres
       - redis
-#      - mysql
-#    volumes:
-#      '/pacnet/': '../../pacnet'
+  stat:
+    net:
+      ip: 192.168.50.110
+    ansible_groups:
+      - docker
+#      - storm
+    ports:
+      49080: 8080
+
+  
 

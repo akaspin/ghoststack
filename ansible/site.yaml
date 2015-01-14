@@ -53,3 +53,29 @@
       image=mysql
       ports=3306:3306
       env='MYSQL_ROOT_PASSWORD=root'
+
+- hosts: storm
+  tasks:
+  - name: run zookeeper
+    docker: >
+      image=wurstmeister/zookeeper
+      name=zookeeper
+      ports=49181:2181
+  - name: run storm nimbus
+    docker: >
+      image=wurstmeister/storm-nimbus
+      name=nimbus
+      ports=49773:3773,49772:3772,49627:6627
+      links=zookeeper:zk
+  - name: run storm supervisor
+    docker: >
+      image=wurstmeister/storm-supervisor
+      name=supervisor
+      ports=8000:8000
+      links=nimbus:nimbus,zookeeper:zk
+  - name: run storm supervisor
+    docker: >
+      image=wurstmeister/storm-ui
+      name=ui
+      ports=49080:8080
+      links=nimbus:nimbus,zookeeper:zk

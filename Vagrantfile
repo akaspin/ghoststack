@@ -41,11 +41,12 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.forward_agent = true
+  config.ssh.insert_key = false
 
   cluster.each_with_index do |(name, props), index|
     config.vm.define name do |member|
       member.vm.box = 'base'
-      
+
       # Network basics
       if props['net']['ip']
         member.vm.hostname = name + props['net']['tld']
@@ -80,6 +81,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # Provision on last box
       if index == cluster.length - 1
         member.vm.provision 'ansible' do |ansible|
+          # ansible.verbose = 'vvvv'
           ansible.groups = ANSIBLE_GROUPS
           ansible.playbook = 'ansible/site.yaml'
           ansible.sudo = true
