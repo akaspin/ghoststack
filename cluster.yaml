@@ -1,3 +1,13 @@
+net:
+  # Multicast group: `224.168.2.9`
+  multicast: 224.168.2.9
+  # Network type: `private_network`
+  type: private_network
+  # Autoconfigure
+  auto: true
+  # Local domain. <name>.local. Use with leading dot.
+  tld: .local
+
 # Override in `nodes`
 defaults:
   # GUI
@@ -11,18 +21,8 @@ defaults:
   cpus: 1
   # Memory
   memory: 1024
-  # Network. Activated only with setted IP.
-  net:
-    # Network type
-    type: private_network
-    # Guest IP
-    ip: null
-    # Autoconfigure
-    auto: true
-    # Local domain. <name>.local. Use with leading dot.
-    tld: .local
-    # Multicast group
-    multicast: 224.168.2.9
+  # Guest IP: IP or 'dhcp' to DHCP
+  net: null
   # Ansible host groups. See `ansible/site.yaml`
   ansible_groups: []
   # Mapped ports: `guest: host`
@@ -32,11 +32,8 @@ defaults:
 
 nodes:
   boss:
-    net:
-      ip: 192.168.50.100
+    net: dhcp
     ports:
-      # MySQL
-      3306: 3306
       # RabbitMQ
       5672: 5672
       15672: 15672
@@ -44,19 +41,19 @@ nodes:
       5432: 5432
       # Redis
       6379: 6379
-    ansible_groups:
-      - docker
-      - amqp
-      - postgres
-      - redis
+#    ansible_groups:
+#      - docker
+#      - amqp
+#      - postgres
+#      - redis
   stat:
-    net:
-      ip: 192.168.50.110
+    memory: 2048
+    net: dhcp
     ansible_groups:
       - docker
 #      - storm
     ports:
-      49080: 8080
+      8080: 8080 # storm ui
 
   
 

@@ -14,15 +14,15 @@ class ::Hash
   end
 end
 
-cluster = YAML::load(open(File.expand_path(File.dirname(__FILE__)) + 
+cluster = YAML::load(open(File.expand_path(File.dirname(__FILE__)) +
                      '/cluster.yaml'))
 cluster['nodes'].each { |k,v| cluster['nodes'][k] =
     Marshal.load(Marshal.dump(cluster['defaults'])).deep_merge(v) }
-cluster = cluster['nodes']
+nodes = cluster['nodes']
 
 ANSIBLE_GROUPS = Hash.new
-cluster.each do |n, ps|
-  unless ps['net']['ip'].nil?
+nodes.each do |n, ps|
+  unless ps['net'].nil?
     ps['ansible_groups'] << 'multicast'
   end
   ps['ansible_groups'].each do |group|
@@ -43,15 +43,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_agent = true
   config.ssh.insert_key = false
 
-  cluster.each_with_index do |(name, props), index|
+  nodes.each_with_index do |(name, props), index|
     config.vm.define name do |member|
       member.vm.box = 'base'
 
       # Network basics
-      if props['net']['ip']
-        member.vm.hostname = name + props['net']['tld']
-        member.vm.network props['net']['type'], ip: props['net']['ip'],
-            auto_configure: props['net']['auto']
+      unless props['net'].nil?
+        member.vm.hostname = name + cluster['net']['tld']
+        if props['net'] == 'dhcp'
+          member.vm.network cluster['net']['type'], type: 'dhcp'
+        else
+          member.vm.network cluster['net']['type'], ip: props['net'],
+              auto_configure: props['net']['auto']
+        end
       end
 
       props['ports'].each do |guestp, hostp|
@@ -79,7 +83,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
 
       # Provision on last box
-      if index == cluster.length - 1
+      if index == nodes.length - 1
         member.vm.provision 'ansible' do |ansible|
           # ansible.verbose = 'vvvv'
           ansible.groups = ANSIBLE_GROUPS
@@ -87,7 +91,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           ansible.sudo = true
           ansible.limit = 'all'
           ansible.extra_vars = {
-            multicast: props['net']['multicast']
+            multicast: cluster['net']['multicast']
           }
         end
       end
