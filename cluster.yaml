@@ -41,11 +41,12 @@ nodes:
       5432: 5432
       # Redis
       6379: 6379
-#    ansible_groups:
-#      - docker
-#      - amqp
-#      - postgres
-#      - redis
+    ansible_groups:
+      - docker
+      - amqp
+      - postgres
+      - redis
+
   stat:
     memory: 2048
     net: dhcp
@@ -54,6 +55,8 @@ nodes:
 #      - storm
     ports:
       8080: 8080 # storm ui
+    volumes:
+      '/tamtam/': '../../tamtam'
 
   
 
