@@ -55,6 +55,7 @@ nodes:
 #      - storm
     ports:
       8080: 8080 # storm ui
+      6627: 6627 # storm ui
     volumes:
       '/tamtam/': '../../tamtam'
 
