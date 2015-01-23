@@ -59,5 +59,9 @@ nodes:
     volumes:
       '/tamtam/': '../../tamtam'
 
-  
-
+  capstan:
+    net: dhcp
+    ansible_groups:
+      - docker
+    volumes:
+      '/sandbox/': '../../sandbox'
