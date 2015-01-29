@@ -54,6 +54,14 @@
       ports=3306:3306
       env='MYSQL_ROOT_PASSWORD=root'
 
+- hosts: graphite
+  tasks:
+  - name: run graphite and statsd
+    docker: >
+      name=graphite
+      image=hopsoft/graphite-statsd
+      ports=80:80,2003:2003,8125:8125/udp
+
 - hosts: storm
   tasks:
   - name: run zookeeper

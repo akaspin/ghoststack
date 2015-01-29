@@ -41,27 +41,15 @@ nodes:
       5432: 5432
       # Redis
       6379: 6379
+      # Graphite
+      80: 80
+      2003: 2003
+      # Statsd
+      8125: 8125/udp
     ansible_groups:
       - docker
       - amqp
       - postgres
       - redis
+      - graphite
 
-  stat:
-    memory: 2048
-    net: dhcp
-    ansible_groups:
-      - docker
-#      - storm
-    ports:
-      8080: 8080 # storm ui
-      6627: 6627 # storm ui
-    volumes:
-      '/tamtam/': '../../tamtam'
-
-  capstan:
-    net: dhcp
-    ansible_groups:
-      - docker
-    volumes:
-      '/sandbox/': '../../sandbox'
