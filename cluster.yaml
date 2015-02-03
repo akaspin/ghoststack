@@ -32,24 +32,16 @@ defaults:
 
 nodes:
   boss:
-    net: dhcp
+#    net: dhcp
     ports:
-      # RabbitMQ
-      5672: 5672
-      15672: 15672
       # Postgres
       5432: 5432
       # Redis
       6379: 6379
-      # Graphite
-      80: 80
-      2003: 2003
-      # Statsd
-      8125: 8125/udp
+    volumes:
+      '/tamtam': '../../tamtam'
     ansible_groups:
       - docker
-      - amqp
       - postgres
       - redis
-      - graphite
 
